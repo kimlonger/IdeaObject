@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.authen.dao.VideoDao">
+    <resultMap id="videoMap" type="com.qf.authen.entity.Video">
+        <id property="id" column="id"></id>
+        <result property="title" column="title"></result>
+        <result property="detail" column="detail"></result>
+        <result property="time" column="time"></result>
+        <result property="speaker_id" column="speaker_id"></result>
+        <result property="course_id" column="course_id"></result>
+        <result property="video_url" column="video_url"></result>
+        <result property="image_url" column="image_url"></result>
+        <result property="play_num" column="play_num"></result>
+        <association property="speaker" javaType="com.qf.authen.entity.Speaker">
+            <id property="id" column="id"></id>
+            <result property="speaker_name" column="speaker_name"/>
+            <result property="speaker_desc" column="speaker_desc"/>
+            <result property="speaker_job" column="speaker_job"/>
+            <result property="head_img_url" column="head_img_url"/>
+        </association>
+        <association property="course" javaType="com.qf.authen.entity.Course">
+            <id property="id" column="id"></id>
+            <result property="course_title" column="course_title"/>
+            <result property="course_desc" column="course_desc"/>
+            <result property="subject_id" column="subject_id"/>
+        </association>
+    </resultMap>
+<!--多条件查询-->
+    <sql id="videoQueryVo">
+        <where>
+            <if test="title != null and title != ''">
+                AND video.title LIKE '%${title}%'
+            </if>
+            <if test="speaker_id != null and speaker_id != ''">
+                AND speaker_id = #{speaker_id}
+            </if>
+            <if test="course_id != null and course_id != ''">
+                AND course_id = #{course_id}
+            </if>
+        </where>
+    </sql>
+
+
+    <!-- 根据queryVo分页查询数据 -->
+    <select id="queryVideoByQueryVo" parameterType="QueryVo" resultMap="videoMap">
+        select * from video left join speaker on video.speaker_id = speaker.id
+        left join course on video.course_id = course.id
+        <include refid="videoQueryVo"/>
+        <if test="start != null">
+            limit #{start}, #{rows};
+        </if>
+    </select>
+    <!-- 根据queryVo查询数据条数 -->
+    <select id="queryCountByQueryVo" parameterType="QueryVo" resultType="integer">
+        SELECT count(*) FROM video
+        <include refid="videoQueryVo"/>
+    </select>
+    <!--根据id查询所有-->
+    <select id="queryVideoById" resultType="com.qf.authen.entity.Video" resultMap="videoMap">
+        select *from video where id=#{id}
+    </select>
+
+    <!--删除-->
+<delete id="deleteVideoById" parameterType="java.lang.Long" >
+    delete from video where id=#{id}
+</delete>
+    <!--添加-->
+    <insert id="saveCount" parameterType="com.qf.authen.entity.Video" >
+        insert into video (title,speaker_id,course_id,time,image_url,video_url,detail)values (#{title},#{speaker_id},#{course_id},#{time},#{image_url},#{video_url},#{detail})
+    </insert>
+
+
+    <!--修改-->
+    <update id="updateVideoById"  parameterType="com.qf.authen.entity.Video"
+    >
+        update `video` set
+        <if test="title !=null and title != ''">
+            `title` = #{title},
+        </if>
+        <if test="speaker_id !=null">
+            `speaker_id` = #{speaker_id},
+        </if>
+        <if test="course_id !=null">
+            `course_id` = #{course_id},
+        </if>
+        <if test="time !=null and time != ''">
+            `time` = #{time},
+        </if>
+        <if test="image_url !=null and image_url != ''">
+            `image_url` = #{image_url},
+        </if>
+        <if test="video_url !=null and video_url != ''">
+            `video_url` = #{video_url},
+        </if>
+        <if test="detail !=null and detail != ''">
+            `detail` = #{detail}
+        </if>
+        where `id` = #{id};
+    </update>
+    <select id="findById" resultMap="videoMap">
+        select * from video,speaker,course where speaker.id = video.speaker_id and course.id = video.course_id and video.id = #{id}
+    </select>
+   <update id="addVideoNum" parameterType="com.qf.authen.entity.Video" >
+       update video set play_num=play_num+1 where id=#{id}
+   </update>
+</mapper>

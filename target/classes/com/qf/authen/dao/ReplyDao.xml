@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.authen.dao.ReplyDao">
+
+
+
+    <insert id="addReply" parameterType="com.qf.authen.entity.Reply">
+        insert into reply (r_userid,r_content,r_otherid,r_contentid,r_state)values (#{r_userid},#{r_content},#{r_otherid},#{r_contentid},#{r_state})
+    </insert>
+    <select id="findAll" resultType="com.qf.authen.entity.Reply">
+        select * from reply
+    </select>
+</mapper>

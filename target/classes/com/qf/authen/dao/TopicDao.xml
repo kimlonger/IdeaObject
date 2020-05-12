@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.authen.dao.TopicDao">
+
+    <!--添加用户-->
+    <insert id="addTopic" parameterType="com.qf.authen.entity.Topic">
+        insert into topic (title,content,topic_time,topic_user,topic_img)values (#{title},#{content},#{topic_time},#{topic_user},#{topic_img})
+    </insert>
+    <select id="findAll" resultType="com.qf.authen.entity.Topic">
+        select * from topic
+    </select>
+    <select id="findTopicById" resultType="com.qf.authen.entity.Topic">
+        select * from topic where id=#{id}
+    </select>
+</mapper>

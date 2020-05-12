@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.authen.dao.UserDao">
+    <!--注册-->
+    <insert id="addUser" parameterType="User"  >
+     insert into user (email,password)values(#{email},#{password})
+    </insert>
+    <!--验证注册-->
+    <select id="queryUserByEmail"   resultType="java.lang.String">
+    select * from user where email=#{email}
+    </select>
+
+
+    <!--登录-->
+    <select id="login" resultType="User" parameterType="User">
+        select * from user where email=#{email} and password=#{password}
+    </select>
+    <!--验证验证码是否正确-->
+    <select id="queryUserCode" resultType="User" parameterType="User">
+        select *from user where email=#{email} and code=#{code}
+    </select>
+
+    <!--更改资料-->
+    <update id="updateUserById"  parameterType="User">
+        update user set nickName=#{nickName},sex=#{sex},birthday=#{birthday},address=#{address} where id=#{id}
+    </update>
+
+    <!--根据email查询 返回user-->
+    <select id="queryAll" resultType="User">
+        select * from user where email=#{email}
+    </select>
+    <!--更改密码 根据邮箱-->
+    <update id="updateUserByEmail" parameterType="User">
+        update user set password=#{password} where email=#{email}
+    </update>
+
+    <!--图片上传-->
+    <update id="updateUserImg" parameterType="User">
+        update user set imgUrl=#{imgUrl} where email=#{email}
+    </update>
+    <!--更改验证码-->
+    <update id="updateUserCode" parameterType="User">
+        update user set code=#{code} where email=#{email}
+    </update>
+</mapper>

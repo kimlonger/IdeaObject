@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.authen.dao.CourseDao">
+    <resultMap id="courseMap" type="com.qf.authen.entity.Course">
+        <result property="course_desc" column="course_desc"></result>
+        <collection property="videoList" ofType="com.qf.authen.entity.Video">
+            <id property="id" column="vid"></id>
+            <result column="title" property="title"></result>
+            <result column="play_num" property="play_num"></result>
+            <result column="time" property="time"></result>
+            <result column="detail" property="detail"></result>
+            <association property="speaker" javaType="com.qf.authen.entity.Speaker">
+                <id column="id" property="id"></id>
+                <result column="speaker_name" property="speaker_name"></result>
+            </association>
+        </collection>
+    </resultMap>
+    <!--查询所有-->
+    <select id="courseList" resultType="com.qf.authen.entity.Course">
+        select *from course
+    </select>
+    <resultMap id="courseMap2" type="com.qf.authen.entity.Course">
+    <id property="id" column="id"></id>
+    <result property="course_title" column="course_title"></result>
+    <result property="course_desc" column="course_desc"></result>
+    <result property="subject_id" column="subject_id"></result>
+    <association property="subject" javaType="com.qf.authen.entity.Subject">
+        <result property="id" column="subject.id"></result>
+        <result property="subject_name" column="subject_name"></result>
+    </association>
+    </resultMap>
+    <!-- 根据queryVo分页查询数据 -->
+    <select id="queryCourseByQueryVo" parameterType="QueryVo" resultMap="courseMap2">
+        select * from course left join subject on course.subject_id = subject.id
+        <if test="start != null">
+            limit #{start}, #{rows};
+        </if>
+    </select>
+<!--    <select id="findById" resultMap="courseMap">-->
+<!--        select * from course,subject where subject.id = course.subject_id and course.id = #{id}-->
+<!--    </select>-->
+    <!-- 根据queryVo查询数据条数 -->
+    <select id="queryCountByQueryVo" parameterType="QueryVo"
+            resultType="integer">
+        SELECT count(*) FROM course
+    </select>
+
+    <!--查询所有根据id-->
+    <select id="queryCourseById" resultType="com.qf.authen.entity.Course">
+        select *from course where id=#{id}
+    </select>
+
+    <!--删除用户-->
+    <delete id="deleteCourseById" parameterType="java.lang.Long">
+        delete from course where id=#{id}
+    </delete>
+
+    <!--添加用户-->
+    <insert id="saveCourse" parameterType="com.qf.authen.entity.Course">
+        insert into course (course_title,course_desc,subject_id)values (#{course_title},#{course_title},#{subject_id})
+    </insert>
+    <!--修改-->
+    <update id="updateCourseById"  parameterType="com.qf.authen.entity.Course">
+        update course set course_title=#{course_title},course_desc=#{course_desc},subject_id=#{subject_id} where id=#{id}
+    </update>
+
+    <select id="findAllCourseVideo" resultMap="courseMap">
+        select c.course_desc,v.id vid,v.title,v.detail,v.play_num,v.time,s.speaker_name
+        from course c
+        left join video v on v.course_id = c.id
+        left join speaker s on s.id = v.speaker_id
+        <where>
+            c.id = (select v.course_id from video v
+            <where>
+                v.id = #{id}
+            </where>
+            )
+        </where>
+
+    </select>
+
+
+</mapper>

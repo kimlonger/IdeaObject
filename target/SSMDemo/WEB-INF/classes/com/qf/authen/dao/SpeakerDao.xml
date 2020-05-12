@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.authen.dao.SpeakerDao">
+
+    <!--分页查询-->
+    <select id="querySpeakerByQueryVo" parameterType="QueryVo"
+            resultType="com.qf.authen.entity.Speaker">
+    select * from  speaker limit #{start}, #{rows}
+    </select>
+
+    <!-- 根据queryVo查询数据条数 -->
+    <select id="queryCountByQueryVo" parameterType="QueryVo"
+            resultType="integer">
+        SELECT count(*) FROM speaker
+    </select>
+
+
+<!--查询所有根据id-->
+    <select id="querySpeakerById" resultType="com.qf.authen.entity.Speaker">
+        select *from speaker where id=#{id}
+    </select>
+
+    <select id="speakerList" resultType="com.qf.authen.entity.Speaker">
+        select * from  speaker
+    </select>
+
+
+
+    <!--删除用户-->
+    <delete id="deleteSpeakerById" parameterType="java.lang.Long">
+        delete from speaker where id=#{id}
+    </delete>
+
+
+
+    <!--添加用户-->
+    <insert id="saveSpeaker" parameterType="com.qf.authen.entity.Speaker">
+        insert into speaker (speaker_name,speaker_job,speaker_desc)values (#{speaker_name},#{speaker_job},#{speaker_desc})
+    </insert>
+    <!--修改-->
+    <update id="updateSpeakerById"  parameterType="com.qf.authen.entity.Speaker">
+       update speaker set speaker_name=#{speaker_name},speaker_job=#{speaker_job},speaker_desc=#{speaker_desc} where id=#{id}
+    </update>
+</mapper>

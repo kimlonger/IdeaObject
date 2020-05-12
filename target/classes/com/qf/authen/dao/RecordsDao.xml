@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.authen.dao.RecordsDao">
+
+    <!--添加用户-->
+    <insert id="addRecords" parameterType="com.qf.authen.entity.Records">
+        insert into records (video_id,video_title,video_time,video_img,video_num,video_user)values (#{video_id},#{video_title},#{video_time},#{video_img},#{video_num},#{video_user})
+    </insert>
+    <!--查询记录-->
+    <select id="findAll" resultType="com.qf.authen.entity.Records">
+        select * from records where video_user=#{video_user}
+    </select>
+</mapper>
